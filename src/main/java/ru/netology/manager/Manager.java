@@ -1,49 +1,63 @@
 package ru.netology.manager;
 
 import ru.netology.domain.Film;
+import ru.netology.repository.Repository;
 
 
-public class Manager{
-    private int maxLimit;
-    private Film[] films = new Film[0];
+public class Manager {
+    private Repository repo;
 
-    public Manager() {
-        this.maxLimit = 10;
+
+    public Manager(Repository repo) {
+
+        this.repo = repo;
+    }
+
+    private int maxLimit = 10;
+
+    public int getMaxLimit() {
+        return maxLimit;
     }
 
     public void setMaxLimit(int maxLimit) {
+
+        this.maxLimit = maxLimit;
+    }
+
+
+    public Manager(Repository repo, int maxLimit) {
+        this.repo = repo;
         this.maxLimit = maxLimit;
     }
 
     public void save(Film film) {
-        Film[] tmp = new Film[films.length + 1];
-        for (int i = 0; i < films.length; i++) {
-            tmp[i] = films[i];
-        }
-        tmp[tmp.length - 1] = film;
-        films = tmp;
+        repo.save(film);
     }
 
     public Film[] findAll() {
-        return this.films;
+        return repo.findAll();
     }
 
 
-    public Film[] findLastFilms(){
-        int resultLength;
+    public Film[] findLastFilms() {
 
-        if (films.length < maxLimit) {
-            resultLength = films.length;
-        } else {
+
+        Film[] all = repo.findAll();
+        int resultLength;
+        if (maxLimit >= 0 && maxLimit < all.length) {
             resultLength = maxLimit;
+        } else {
+            resultLength = all.length;
         }
 
         Film[] tmp = new Film[resultLength];
         for (int i = 0; i < tmp.length; i++) {
-            tmp[i] = films[films.length - 1 - i];
+            tmp[i] = all[all.length - 1 - i];
         }
         return tmp;
     }
+
+
 }
 
 
